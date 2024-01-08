@@ -2,20 +2,21 @@
   <div>
     <div class="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:max-w-7xl lg:px-8">
       <div class="py-24">
-        <h1 class="text-4xl font-bold tracking-tight text-blue">Tambah Produk</h1>
+        <h1 class="text-4xl font-bold tracking-tight text-blue">Edit Produk</h1>
       </div>
       <div class="rounded-lg border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default sm:px-7.5 xl:pb-1">
-        <form @submit.prevent="storeProduct()" >
-          <div id="nama_produk">
+        <form>
+          <div>
             <label for="nama_produk" class="block mb-3 font-semibold text-blue text-md mt-4 text-left">Nama
               produk</label>
-            <input id="nama-produk" type="text" placeholder="Baju Koko Bagus" v-model="products.nama_produk" name="nama_produk"
+            <input id="nama_produk" type="text" v-model="editedProduct.nama_produk"
                    class="block w-full py-3 pl-5 mt-1 border border-orange rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"/>
           </div>
           <div id="harga_produk">
             <label for="harga_produk" class="block mb-3 font-semibold text-blue text-md mt-4 text-left">Harga
               produk</label>
-            <input id="harga_produk" name="harga_produk" type="text" placeholder="Baju Koko Bagus" v-model="products.harga"
+            <input id="harga_produk" name="harga_produk" type="text" placeholder="Baju Koko Bagus"
+                   v-model="editedProduct.harga"
                    class="block w-full py-3 pl-5 mt-1 border border-orange rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"/>
           </div>
           <div id="kategori">
@@ -76,8 +77,9 @@
           <div id="stock">
             <label for="stock_produk" class="block mb-3 font-semibold text-blue text-md mt-4 text-left">Stock
               Produk</label>
-            <input id="stock-produk" type="number" placeholder="10"
-                   v-model="products.stock" name="stok"
+            <input id="stock-produk" type="number"
+                   name="stok"
+                   v-model="editedProduct.stok"
                    class="block w-full py-3 pl-5 mt-1 border border-orange rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"/>
           </div>
           <div id="product_photo">
@@ -92,9 +94,10 @@
               <p class="font-medium text-white justify-center">Tambah Gambar +</p>
             </button>
           </div>
-            <button type="submit" class="btn btn-blue mt-4 flex items-center mb-4" id="tambah-produk">
-              <p class="font-medium text-white justify-center">Tambak Produk</p>
-            </button>
+          <button type="button" class="btn btn-blue mt-4 flex items-center mb-4" id="tambah-produk"
+                  @click="storeProduct">
+            <p class="font-medium text-white justify-center">Simpan Produk</p>
+          </button>
         </form>
       </div>
     </div>
@@ -102,13 +105,11 @@
 </template>
 <script lang="ts" setup>
 import {Listbox, ListboxButton, ListboxOption, ListboxOptions} from "@headlessui/vue";
-import {ref} from 'vue'
-import {errorObj} from "standard-as-callback/built/utils";
+import {useCurrencyFormatter} from "~/composables/currencyFormatter";
 
-const { $jwtAuth } = useNuxtApp()
 definePageMeta({
   layout: 'main',
-  middleware: 'auth',
+  middleware: 'auth'
 })
 const items = ref([{
   placeholder: "File gambar 1",
@@ -118,21 +119,34 @@ const items = ref([{
 }]);
 
 const categories = [
-  { id: 1, nama_kategori: 'mukenah' },
-  { id: 2, nama_kategori: 'sajadah' },
-  { id: 3, nama_kategori: 'baju-koko' },
-  { id: 4, nama_kategori: 'sarung' },
-  { id: 5, nama_kategori: 'jilbab' },
+  {id: 1, nama_kategori: 'mukenah'},
+  {id: 2, nama_kategori: 'sajadah'},
+  {id: 3, nama_kategori: 'baju-koko'},
+  {id: 4, nama_kategori: 'sarung'},
+  {id: 5, nama_kategori: 'jilbab'},
 ];
+const selectedCategory = ref(categories[4]);
+const route = useRoute();
+const idProduk = ref(null)
 
-const selectedCategory = ref(categories[0]);
-const products = ref({
+
+const editedProduct = ref({
   nama_produk: '',
   harga: null,
-  stock: null,
+  stok: null,
   category_id: '',
   thumbnails: [],
 })
+
+
+const data = ref({})
+const handleFileChange = (e: any) => {
+  editedProduct.value.thumbnails.push(e.target.files[0]);
+}
+
+function select(id) {
+  editedProduct.value.category_id = id;
+}
 
 function addPhoto() {
   if (items.value.length >= 2) return alert("Maksimal dua gambar");
@@ -144,37 +158,54 @@ function addPhoto() {
   })
 }
 
-const  handleFileChange = (e: any) => {
-  products.value.thumbnails.push(e.target.files[0]);
-}
-
-function select(id) {
-  products.value.category_id = id;
-}
-
-async function storeProduct(){
+async function storeProduct() {
 
   let formData = new FormData();
 
-  console.log(products.value.category_id);
-  formData.append('nama_produk', products.value.nama_produk);
-  formData.append('harga', products.value.harga);
-  formData.append('stok', products.value.stock);
-  formData.append('category_id', products.value.category_id);
-  for (let i = 0; i < products.value.thumbnails.length; i++) {
-    formData.append('thumbnails[]', products.value.thumbnails[i]);
+  formData.append("_method", "PUT");
+  formData.append('nama_produk', editedProduct.value.nama_produk);
+  formData.append('harga', editedProduct.value.harga);
+  formData.append('stok', editedProduct.value.stok);
+  formData.append('category_id', editedProduct.value.category_id);
+  for (let i = 0; i < editedProduct.value.thumbnails.length; i++) {
+    formData.append('thumbnails[]', editedProduct.value.thumbnails[i]);
   }
-  console.log(products.value);
+  console.log(editedProduct.value);
 
   // post data
-  try{
-    await useFetchApiWithAuth('/products/', {
+  try {
+    await useFetchApiWithAuth('/products/' + idProduk.value, {
       method: 'POST',
       body: formData,
-    })
-    window.location.replace('/manage');
-  }catch (e){
+    }).then((response) => console.log(response)).finally(() =>
+        window.location.replace('/manage'));
+  } catch (e) {
     console.log(e);
   }
 }
+
+onMounted(() => {
+  nextTick(async () => {
+    const {data: response} = await useFetchApi('/products/' + route.params.id)
+    idProduk.value = response?.value?.data.id_produk;
+    data.value = response?.value?.data;
+
+
+    document.getElementById("nama_produk").setAttribute("placeholder", data.value.nama_produk);
+    document.getElementById("harga_produk").setAttribute("placeholder", data.value.harga);
+    document.getElementById("stock-produk").setAttribute("placeholder", data.value.stok);
+
+
+    selectedCategory.value = computed(() => categories.find((category) => category.id === data.value.category.id));
+    editedProduct.value.nama_produk = data.value.nama_produk;
+    editedProduct.value.harga = data.value.harga;
+    editedProduct.value.stok = data.value.stok;
+    editedProduct.value.category_id = data.value.category.id;
+    selectedCategory.value = data.value.category;
+
+    console.log(useCurrencyFormatter(editedProduct.value.stok));
+  })
+})
+
+
 </script>

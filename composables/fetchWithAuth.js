@@ -8,6 +8,7 @@ export const useFetchApiWithAuth = async (request, opts) => {
             // Log error
             if (response.status === 401) {
                 $jwtAuth.logout();
+                alert("Sesi anda habis. silahkan masuk kembali");
             }else {
                 console.error('onResponseError', response);
             }

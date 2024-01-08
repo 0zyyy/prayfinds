@@ -21,7 +21,7 @@
               </h3>
               <p class="mt-1 text-sm text-gray font-medium capitalize">{{ product.category.nama_kategori.split("-").join(" ")}}</p>
             </div>
-            <p class="mt-1 text-sm text-orange font-semibold">Rp. {{ product.harga }}</p>
+            <p class="mt-1 text-sm text-orange font-semibold">{{ product.harga }}</p>
           </div>
         </NuxtLink>
       </div>

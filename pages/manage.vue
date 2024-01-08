@@ -59,11 +59,11 @@
                       class="inline-flex items-center justify-center px-3 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue">
                     View
                   </NuxtLink>
-                  <NuxtLink
-                      :to="'/product/edit/'+ product.id"
+                  <button
+                      @click="navigate(product.id)"
                       class="inline-flex items-center justify-center px-3 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue">
                     Edit
-                  </NuxtLink>
+                  </button>
                   <button
                       @click="openModal(product.id)"
                       class="inline-flex items-center justify-center px-3 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue">
@@ -83,6 +83,7 @@
         </div>
       </div>
     </div>
+    <!-- Modal -->
     <TransitionRoot appear :show="isOpen" as="template">
       <Dialog as="div" @close="closeModal" class="relative z-10">
         <TransitionChild
@@ -188,9 +189,8 @@ const deleteProduct = async () => {
   console.log(response);
   laravelData.value.data = laravelData.value.data.filter((product) => product.id !== productId.value);
   closeModal();
-
   }catch (e){
-
+    console.log(e);
   }
 }
 
@@ -201,6 +201,12 @@ function closeModal() {
 function openModal(id: Number) {
   productId.value = id;
   isOpen.value = true
+}
+
+function navigate(id_produk: string){
+  return navigateTo({
+    path: 'product/edit/' + id_produk,
+  })
 }
 
 onMounted(() => {
