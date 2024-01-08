@@ -59,10 +59,11 @@
                       class="inline-flex items-center justify-center px-3 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue">
                     View
                   </NuxtLink>
-                  <button
+                  <NuxtLink
+                      :to="'/product/edit/'+ product.id"
                       class="inline-flex items-center justify-center px-3 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue">
                     Edit
-                  </button>
+                  </NuxtLink>
                   <button
                       @click="openModal(product.id)"
                       class="inline-flex items-center justify-center px-3 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue">
@@ -158,19 +159,17 @@ import {
   DialogPanel,
   DialogTitle,
 } from '@headlessui/vue'
-
 definePageMeta({
   layout: 'main',
   middleware: 'auth',
 })
+
+
 const { $jwtAuth } = useNuxtApp()
 const laravelData = ref({});
 
 const getResults = async (page = 1) => {
-  const {data: response} = await useFetch(`/product/filter?page=${page}`,
-      {
-        baseURL: "http://localhost:8000/api",
-      });
+  const {data: response} = await useFetchApi(`/product/filter?page=${page}`);
   laravelData.value = await response?.value;
   console.log(laravelData.value);
 }
@@ -178,13 +177,21 @@ const getResults = async (page = 1) => {
 const isOpen = ref(false)
 const productId = ref(1)
 const deleteProduct = async () => {
-  const {data: response} = await $jwtAuth.fetch(`/products/${productId.value}`,
-      {
-        method: 'DELETE',
-      });
+  try {
+  const {data: response, error} = await useFetchApiWithAuth(`/products/${productId.value}`, {
+    method: 'DELETE',
+  })
+  if(error?.value?.statusCode === 500){
+    laravelData.value = [];
+    return;
+  }
   console.log(response);
   laravelData.value.data = laravelData.value.data.filter((product) => product.id !== productId.value);
   closeModal();
+
+  }catch (e){
+
+  }
 }
 
 function closeModal() {

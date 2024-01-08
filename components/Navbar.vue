@@ -13,11 +13,10 @@
             </div>
             <ul tabindex="0"
                 class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-              <li><p class="font-semibold">Mengapa Kami</p></li>
-              <li>
-                <p class="font-semibold">Kategori Produk</p>
+              <li><p class="font-semibold">Home</p></li>
+              <li v-if="loggedIn">
+                <NuxtLink class="font-semibold" to="/manage">Manage</NuxtLink>
               </li>
-              <li><p class="font-semibold">Contoh Produk</p></li>
               <li>
                 <NuxtLink class="font-semibold" to="/about">Tentang Kami</NuxtLink>
               </li>
@@ -30,15 +29,10 @@
         <div class="navbar-center hidden lg:flex font-medium">
           <ul class="menu menu-horizontal px-1">
             <li>
-              <NuxtLink to="/" class="font-semibold text-blue  hover:bg-orange hover:text-white">Mengapa Kami</NuxtLink>
+              <NuxtLink to="/" class="font-semibold text-blue  hover:bg-orange hover:text-white">Home</NuxtLink>
             </li>
-            <li>
-              <NuxtLink to="/" class="font-semibold text-blue  hover:bg-orange hover:text-white">Kategori Produk
-              </NuxtLink>
-            </li>
-            <li>
-              <NuxtLink to="/" class="font-semibold text-blue  hover:bg-orange hover:text-white">Contoh Produk
-              </NuxtLink>
+            <li v-if="loggedIn">
+              <NuxtLink to="/manage" class="font-semibold text-blue  hover:bg-orange hover:text-white">Manage</NuxtLink>
             </li>
             <li>
               <NuxtLink to="/about" class="font-semibold text-blue  hover:bg-orange hover:text-white">Tentang Kami

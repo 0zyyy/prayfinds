@@ -88,7 +88,7 @@
                   class="absolute left-0 z-10 mt-2 w-40 origin-top-left rounded-md bg-white shadow-2xl ring-1 ring-blue ring-opacity-5 focus:outline-none">
                 <div class="py-1">
                   <MenuItem v-for="option in sortOptions" :key="option" v-slot="{ active }">
-                    <a :href="option.href"
+                    <a @click="queries.sort = option.name"
                        :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm font-medium text-blue hover:text-orange']">{{
                         option.name
                       }}</a>
@@ -165,16 +165,26 @@ import {XMarkIcon} from '@heroicons/vue/24/outline'
 import {ChevronDownIcon} from '@heroicons/vue/20/solid'
 import Pagination from "~/components/Pagination.vue";
 import products from "~/components/Products.vue";
-
+import router from "#app/plugins/router";
 definePageMeta({
   layout: 'main',
 })
-const sortOptions = [
-  {name: 'Most Popular', href: '#'},
-  {name: 'Best Rating', href: '#'},
-  {name: 'Newest', href: '#'},
-  {name: 'Oldest', href: '#'},
-]
+const queries = ref({
+  sort: '',
+  'filter[category_id]': '',
+});
+
+watch(queries, async () => {
+  console.log(queries.value);
+  useRouter().push({query: queries?.value})
+}, {deep: true, immediate: true})
+
+
+const sortOptions =
+    [
+      {name: 'Newest', href: '#'},
+      {name: 'Oldest', href: '#'},
+    ]
 const filters = [
   {
     id: 'category',
@@ -202,14 +212,12 @@ let links = ref({});
 
 onMounted(() => {
   nextTick(async () => {
-    const {data: response} = await useFetch("/product/filter?page=" + currentPage.value,
-        {
-          baseURL: "http://localhost:8000/api",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-          }
-        })
+    if(router && router.currentRoute && router.currentRoute.query){
+      console.log(router.currentRoute.query);
+    }
+    const {data: response} = await useFetchApi(`/product/filter?page=${currentPage.value}`, {
+      method: 'GET',
+    })
     allProduct.value = response?.value?.data;
     currentPage.value = response?.value?.current_page;
     hasMorePages.value = response?.value?.next_page_url != null;

@@ -48,21 +48,28 @@ import {ref} from 'vue';
 import PaginationNew from "~/components/PaginationNew.vue";
 
 const laravelData = ref({});
+const emit = defineEmits(['product-exam']);
 const getResults = async (page = 1) => {
-  const {data: response} = await useFetch(`/product/filter?page=${page}`,
-      {
-        baseURL: "http://localhost:8000/api",
-      });
+  const {data: response} = await useFetchApi(`/product/filter?page=${page}`)
   laravelData.value = await response?.value;
+  console.log(laravelData.value);
 }
 
 const productExample = async () => {
-  const {data: response} = await useFetch(`/product-example`,
-      {
-        baseURL: "http://localhost:8000/api",
-      });
-  laravelData.value = await response?.value;
-  console.log(laravelData.value);
+  try {
+    const {data: response, error} = await useFetchApi(`/product-example`, {
+      method: 'GET',
+    })
+    if(error?.value?.statusCode === 500){
+      laravelData.value = [];
+      return;
+    }
+    laravelData.value = await response?.value;
+    emit('product-exam', laravelData.value.category);
+    console.log(laravelData.value);
+  }catch (e){
+    console.log(e);
+  }
 }
 
 
@@ -71,7 +78,6 @@ onMounted(() => {
     if (props.isCatalog) {
       await getResults();
     }  else {
-
       await productExample();
     }
   })

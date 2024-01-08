@@ -3,7 +3,9 @@
     <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
       <div class="sm:mx-auto sm:w-full sm:max-w-sm">
         <div class="mx-auto">
-          <Icon />
+          <NuxtLink to="/">
+            <Icon/>
+          </NuxtLink>
         </div>
         <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-orange">Masuk</h2>
       </div>
@@ -25,7 +27,7 @@
             </div>
             <div class="mt-2">
               <input id="password" name="password" type="password" autocomplete="current-password" required
-                      v-model="user.password"
+                     v-model="user.password"
                      class="bg-white block w-full rounded-md border-0 py-1.5 text-blue shadow-sm ring-1 ring-inset ring-gray placeholder:text-gray focus:ring-2 focus:ring-inset focus:ring-orange sm:text-sm sm:leading-6">
             </div>
           </div>
@@ -59,28 +61,22 @@ const user = ref({
   password: ''
 })
 
-const { $jwtAuth } = useNuxtApp()
+const {$jwtAuth} = useNuxtApp()
 const router = useRouter()
 
 async function login() {
   try {
-    const { data: response } = await useFetch(`/login`, {
-      baseURL: "http://localhost:8000/api",
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: user.value,
-    })
-    console.log(response.value);
-
-    if (response.value) {
-      $jwtAuth.setTokenAndUser({
-        token: response.value.token,
-        user: response.value.user,
-      })
-      window.location.href = '/'
-    }
+    await $jwtAuth.login(
+        {
+          username: user.value.username,
+          password: user.value.password
+        },
+        // optional callback function
+        (data) => {
+          console.log(data)
+          window.location.replace('/')
+        }
+    )
   } catch (e) {
     // your error handling
     console.log(e);

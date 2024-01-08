@@ -12,8 +12,8 @@
         </ol>
       </nav>
 
-      <div class="mt-4">
-        <h1 class="text-3xl font-bold tracking-tight text-blue sm:text-4xl"> {{ product?.nama_produk?.substr(0,40) + "...." }}</h1>
+      <div class="mt-4 lg:w-[600px]">
+        <h1 class="text-3xl font-bold tracking-tight text-blue sm:text-4xl break-words"> {{ product?.nama_produk }}</h1>
       </div>
 
       <section aria-labelledby="information-heading" class="mt-4">
@@ -97,7 +97,7 @@
               </h3>
               <p class="mt-1 text-sm text-gray font-medium">Baju Koko</p>
             </div>
-            <p class="mt-1 text-sm text-orange font-semibold">Rp. {{ product.harga }}</p>
+            <p class="mt-1 text-sm text-orange font-semibold">{{ product.harga }}</p>
           </div>
         </NuxtLink>
       </div>
@@ -112,6 +112,7 @@ definePageMeta({
 })
 import {RadioGroup, RadioGroupLabel, RadioGroupOption} from '@headlessui/vue'
 
+const config = useRuntimeConfig();
 const product = ref({})
 const relatedProducts = ref([])
 const route = useRoute();
@@ -121,6 +122,7 @@ const sizes = [
   {name: 'L', description: 'Enough room for a serious amount of snacks.'},
   {name: 'XL', description: 'Enough room for a serious amount of snacks.'},
 ];
+console.log(config.public);
 const getProductById = async () => {
   const {data: response} = await useFetch(`/products/${route.params.id}`, {
     baseURL: 'http://localhost:8000/api',

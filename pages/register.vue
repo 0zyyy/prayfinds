@@ -2,7 +2,9 @@
   <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
       <div class="mx-auto">
-        <Icon />
+        <NuxtLink to="/">
+          <Icon/>
+        </NuxtLink>
       </div>
       <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-orange">Registrasi</h2>
     </div>
@@ -66,7 +68,7 @@ const newUser = ref({
 })
 
 const register = async () => {
-  const { data: response } = await useFetch('/register', {
+  const {data: response} = await useFetch('/register', {
     method: 'POST',
     baseURL: "http://localhost:8000/api",
     body: newUser.value

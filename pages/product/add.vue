@@ -103,10 +103,12 @@
 <script lang="ts" setup>
 import {Listbox, ListboxButton, ListboxOption, ListboxOptions} from "@headlessui/vue";
 import {ref} from 'vue'
+import {errorObj} from "standard-as-callback/built/utils";
 
 const { $jwtAuth } = useNuxtApp()
 definePageMeta({
   layout: 'main',
+  middleware: 'auth',
 })
 const items = ref([{
   placeholder: "File gambar 1",
@@ -125,8 +127,8 @@ const categories = [
 const selectedCategory = ref(categories[0]);
 const products = ref({
   nama_produk: '',
-  harga: '',
-  stock: '',
+  harga: null,
+  stock: null,
   category_id: '',
   thumbnails: [],
 })
@@ -163,11 +165,14 @@ async function storeProduct(){
   console.log(products.value);
 
   // post data
-
-  const { data: response } = await $jwtAuth.fetch('/products', {
-    method: 'POST',
-    body: formData,
-  })
-  console.log(response);
+  try{
+    await useFetchApiWithAuth('/products', {
+      method: 'POST',
+      body: formData,
+    })
+    window.location.replace('/manage');
+  }catch (e){
+    console.log(e);
+  }
 }
 </script>

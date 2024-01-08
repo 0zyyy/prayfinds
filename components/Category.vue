@@ -17,7 +17,7 @@
             <img src="/images/icons/mukenah.svg">
             <div class="w-[98px] flex-col justify-start items-center flex">
               <div class="text-blue text-md lg:text-xl font-bold">Mukenah</div>
-              <div class="text-gray text-sm font-medium">837 items</div>
+              <div class="text-gray text-sm font-medium">{{ props.categories[1] }} items</div>
             </div>
           </div>
         </div>
@@ -27,7 +27,7 @@
             <img src="/images/icons/sarung.svg">
             <div class="w-[98px] flex-col justify-start items-center flex">
               <div class="text-blue text-md lg:text-xl font-bold">Sarung</div>
-              <div class="text-gray text-sm font-medium">837 items</div>
+              <div class="text-gray text-sm font-medium">{{ props.categories[2] }} items</div>
             </div>
           </div>
         </div>
@@ -37,7 +37,7 @@
             <img src="/images/icons/jilbab.svg">
             <div class="w-[98px] flex-col justify-start items-center flex">
               <div class="text-blue text-md lg:text-xl font-bold">Jilbab</div>
-              <div class="text-gray text-sm font-medium">837 items</div>
+              <div class="text-gray text-sm font-medium">{{ props.categories[3] }} items</div>
             </div>
           </div>
         </div>
@@ -47,7 +47,7 @@
             <img src="/images/icons/baju.svg">
             <div class="w-[98px] flex-col justify-start items-center flex">
               <div class="text-blue text-md lg:text-xl font-bold">Baju</div>
-              <div class="text-gray text-sm font-medium">837 items</div>
+              <div class="text-gray text-sm font-medium">{{ props.categories[4] }} items</div>
             </div>
           </div>
         </div>
@@ -57,7 +57,7 @@
             <img src="/images/icons/sajadah.svg">
             <div class="w-[98px] flex-col justify-start items-center flex">
               <div class="text-blue text-md lg:text-xl font-bold">Sajadah</div>
-              <div class="text-gray text-sm font-medium">837 items</div>
+              <div class="text-gray text-sm font-medium">{{ props.categories[5] }} items</div>
             </div>
           </div>
         </div>
@@ -72,3 +72,12 @@
     </div>
   </div>
 </template>
+<script lang="ts" setup>
+const props = defineProps({
+  categories: {
+    type: Array,
+    default: [],
+  },
+})
+
+</script>
