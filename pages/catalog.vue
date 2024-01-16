@@ -125,10 +125,11 @@
                   <form class="space-y-4">
                     <div v-for="(option, optionIdx) in section.options" :key="option.value" class="flex items-center">
                       <input :id="`filter-${section.id}-${optionIdx}`" :name="`${section.id}[]`" :value="option.value"
+                             @click="queries['filter[category_id]'] += option.value"
                              type="checkbox" class="h-4 w-4 rounded border-blue text-blue focus:text-blue"/>
                       <label :for="`filter-${section.id}-${optionIdx}`"
                              class="ml-3 whitespace-nowrap pr-6 text-sm font-medium text-blue">{{
-                          option.label
+                          option.label + " ngentod"
                         }}</label>
                     </div>
                   </form>
@@ -139,7 +140,7 @@
         </div>
       </section>
     </div>
-    <Products :is-catalog="true"/>
+    <Products :is-catalog="true" :filter="queries.sort"/>
   </div>
 </template>
 <script setup>
@@ -169,14 +170,15 @@ import router from "#app/plugins/router";
 definePageMeta({
   layout: 'main',
 })
+
+const route = useRoute();
 const queries = ref({
   sort: '',
   'filter[category_id]': '',
 });
 
 watch(queries, async () => {
-  console.log(queries.value);
-  useRouter().push({query: queries?.value})
+  console.log("FROM CATALOG TEMPLATE",queries.value);
 }, {deep: true, immediate: true})
 
 
@@ -202,29 +204,27 @@ const filters = [
 
 const open = ref(false)
 
-let allProduct = ref([]);
-let totalPages = ref(4);
-let perPage = ref(10);
-let currentPage = ref(1);
-let hasMorePages = ref(true);
-let maxVisibleButtons = ref(10);
-let links = ref({});
-
-onMounted(() => {
-  nextTick(async () => {
-    if(router && router.currentRoute && router.currentRoute.query){
-      console.log(router.currentRoute.query);
-    }
-    const {data: response} = await useFetchApi(`/product/filter?page=${currentPage.value}`, {
-      method: 'GET',
-    })
-    allProduct.value = response?.value?.data;
-    currentPage.value = response?.value?.current_page;
-    hasMorePages.value = response?.value?.next_page_url != null;
-    perPage.value = response?.value?.per_page;
-    totalPages.value = response?.value?.last_page;
-    maxVisibleButtons.value = response?.value?.last_page;
-    links.value = response?.value?.links;
-  })
-})
+// let allProduct = ref([]);
+// let totalPages = ref(4);
+// let perPage = ref(10);
+// let currentPage = ref(1);
+// let hasMorePages = ref(true);
+// let maxVisibleButtons = ref(10);
+// let links = ref({});
+//
+// onMounted(() => {
+//   nextTick(async () => {
+//     const {data: response} = await useFetchApi(`/nyoba?sort=-created_at&filer[category_id]=9`, {
+//       method: 'GET',
+//     })
+//     console.log("ON MOUNTED", response.value);
+//     allProduct.value = response?.value?.data;
+//     currentPage.value = response?.value?.current_page;
+//     hasMorePages.value = response?.value?.next_page_url != null;
+//     perPage.value = response?.value?.per_page;
+//     totalPages.value = response?.value?.last_page;
+//     maxVisibleButtons.value = response?.value?.last_page;
+//     links.value = response?.value?.links;
+//   })
+// })
 </script>

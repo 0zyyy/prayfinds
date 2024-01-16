@@ -12,12 +12,18 @@
 
       <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <div class="space-y-6">
+          <div class="font-medium mt-2 text-red text-center" v-if="errors.message">
+            {{ errors.message }}
+          </div>
           <div>
             <label for="username" class="block text-sm font-semibold leading-6 text-blue">Username</label>
             <div class="mt-2">
               <input id="username" name="username" type="email" autocomplete="username" required
                      v-model="user.username"
                      class="bg-white block w-full rounded-md border-0 py-1.5 text-blue shadow-sm ring-1 ring-inset ring-gray placeholder:text-blue focus:ring-2 focus:ring-inset focus:ring-orange sm:text-sm sm:leading-6">
+              <div class="font-medium mt-2 text-red" v-if="errors.username">
+                {{ errors.username[0] }}
+              </div>
             </div>
           </div>
 
@@ -29,6 +35,9 @@
               <input id="password" name="password" type="password" autocomplete="current-password" required
                      v-model="user.password"
                      class="bg-white block w-full rounded-md border-0 py-1.5 text-blue shadow-sm ring-1 ring-inset ring-gray placeholder:text-gray focus:ring-2 focus:ring-inset focus:ring-orange sm:text-sm sm:leading-6">
+              <div class="font-medium mt-2 text-red" v-if="errors.password">
+                {{ errors.password[0] }}
+              </div>
             </div>
           </div>
 
@@ -51,11 +60,13 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {delay} from "unicorn-magic";
 
 definePageMeta({
   layout: 'auth',
 })
+
+const errors = ref({});
+
 const user = ref({
   username: '',
   password: ''
@@ -66,6 +77,10 @@ const router = useRouter()
 
 async function login() {
   try {
+    if(user.value.username === '' || user.value.password === ''){
+      alert('Mohon isi semua field');
+      return;
+    }
     await $jwtAuth.login(
         {
           username: user.value.username,
@@ -73,13 +88,14 @@ async function login() {
         },
         // optional callback function
         (data) => {
-          console.log(data)
+          alert('Login success!');
           window.location.replace('/')
         }
     )
   } catch (e) {
     // your error handling
-    console.log(e);
+    errors.value = e;
+    return;
   }
 }
 </script>

@@ -73,6 +73,10 @@
               </div>
             </Listbox>
           </div>
+          <div id="deskripsi">
+            <label for="deskrip" class="block mb-3 font-semibold text-blue text-md mt-4 text-left">Deskripsi</label>
+          <textarea v-model="products.description" id="deskrip" placeholder="Deskripsi Produk" class="textarea-bordered border border-orange rounded-md textarea-md block w-full py-3 pl-5 mt-1" ></textarea>
+          </div>
           <div id="stock">
             <label for="stock_produk" class="block mb-3 font-semibold text-blue text-md mt-4 text-left">Stock
               Produk</label>
@@ -103,13 +107,12 @@
 <script lang="ts" setup>
 import {Listbox, ListboxButton, ListboxOption, ListboxOptions} from "@headlessui/vue";
 import {ref} from 'vue'
-import {errorObj} from "standard-as-callback/built/utils";
-
-const { $jwtAuth } = useNuxtApp()
 definePageMeta({
   layout: 'main',
   middleware: 'auth',
 })
+
+
 const items = ref([{
   placeholder: "File gambar 1",
   type: "file",
@@ -130,6 +133,7 @@ const products = ref({
   nama_produk: '',
   harga: null,
   stock: null,
+  description: '',
   category_id: '',
   thumbnails: [],
 })
@@ -154,11 +158,16 @@ function select(id) {
 
 async function storeProduct(){
 
+  if(products.value.nama_produk === '' || products.value.harga === null || products.value.stock === null || products.value.description === '' || products.value.category_id === '' || products.value.thumbnails.length === 0){
+    alert('Mohon isi semua field');
+    return;
+  }
+
   let formData = new FormData();
 
   console.log(products.value.category_id);
   formData.append('nama_produk', products.value.nama_produk);
-  formData.append('harga', products.value.harga);
+  formData.append('harga', useCurrencyFormatter(products.value.harga));
   formData.append('stok', products.value.stock);
   formData.append('category_id', products.value.category_id);
   for (let i = 0; i < products.value.thumbnails.length; i++) {

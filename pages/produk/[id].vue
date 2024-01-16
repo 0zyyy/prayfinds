@@ -27,9 +27,7 @@
           <span>Description</span>
         </p>
         <div class="mt-4 space-y-6">
-          <p class="text-base text-gray">Don&#039;t compromise on snack-carrying capacity with this
-            lightweight and spacious bag. The drawstring top keeps all your favorite chips, crisps, fries,
-            biscuits, crackers, and cookies secure.</p>
+          <p class="text-base text-gray">{{ product.deskripsi }}</p>
         </div>
 
         <div class="mt-6 flex items-center">
@@ -68,7 +66,7 @@
     <!-- Product image -->
     <div class="mt-10 lg:col-start-1 lg:row-start-1 lg:mt-0 lg:self-end">
       <div class="aspect-w-1 aspect-h-1 overflow-hidden rounded-lg">
-        <img :src="product.thumbnail_url"
+        <img :src="product?.image?.thumbnail_url"
              alt="Model wearing light green backpack with black canvas straps and front zipper pouch."
              class="h-full w-full object-cover object-center">
       </div>
@@ -80,7 +78,7 @@
       <div class="group relative my-2" v-for="product in relatedProducts" :key="product.id">
         <div
             class="h-56 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:h-72 xl:h-80">
-          <img :src="product.thumbnail_url"
+          <img :src="product?.image?.thumbnail_url"
                alt="Hand stitched, orange leather long wallet."
                class="h-full w-full object-cover object-center">
         </div>
@@ -105,8 +103,6 @@
   </div>
 </template>
 <script lang="ts" setup>
-import router from "#app/plugins/router";
-
 definePageMeta({
   layout: 'main',
 })
@@ -117,25 +113,16 @@ const product = ref({})
 const relatedProducts = ref([])
 const route = useRoute();
 const sizes = [
-  {name: 'S', description: 'Perfect for a reasonable amount of snacks.'},
-  {name: 'M', description: 'Enough room for a serious amount of snacks.'},
-  {name: 'L', description: 'Enough room for a serious amount of snacks.'},
-  {name: 'XL', description: 'Enough room for a serious amount of snacks.'},
+  {name: 'S', description: 'Ukuran S'},
+  {name: 'M', description: 'Ukuran M'},
+  {name: 'L', description: 'Ukuran L'},
+  {name: 'XL', description: 'Ukuran XL'},
 ];
 console.log(config.public);
 const getProductById = async () => {
-  const {data: response} = await useFetch(`/products/${route.params.id}`, {
-    baseURL: 'http://localhost:8000/api',
-  })
+  const {data: response, error} = await useFetchApi(`/products/${route.params.id}`);
   product.value = await response?.value?.data;
   relatedProducts.value = await response?.value?.related;
-}
-
-async function checkLength() {
-  if (product.nama_produk.length > 50) {
-    return product.nama_produk.substring(0, 40) + "...";
-  }
-  return product.nama_produk;
 }
 
 onMounted(() => {

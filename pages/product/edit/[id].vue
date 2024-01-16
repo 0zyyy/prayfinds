@@ -164,7 +164,7 @@ async function storeProduct() {
 
   formData.append("_method", "PUT");
   formData.append('nama_produk', editedProduct.value.nama_produk);
-  formData.append('harga', editedProduct.value.harga);
+  formData.append('harga',useCurrencyFormatter(editedProduct.value.harga));
   formData.append('stok', editedProduct.value.stok);
   formData.append('category_id', editedProduct.value.category_id);
   for (let i = 0; i < editedProduct.value.thumbnails.length; i++) {

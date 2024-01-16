@@ -4,7 +4,7 @@
       <div class="group relative my-2" v-for="product in laravelData.data" :key="product.id">
         <div
             class="h-56 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:h-72 xl:h-80">
-          <img :src="product.thumbnail_url"
+          <img :src="product.image.thumbnail_url"
                alt="Hand stitched, orange leather long wallet."
                class="h-full w-full object-cover object-center">
         </div>
@@ -34,6 +34,10 @@
   </div>
 </template>
 <script setup>
+import PaginationNew from "~/components/PaginationNew.vue";
+import {ref} from 'vue';
+
+
 const props = defineProps({
   isCatalog: {
     type: Boolean,
@@ -43,16 +47,23 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  filter: {
+    type: String,
+    default: '',
+  },
 })
-import {ref} from 'vue';
-import PaginationNew from "~/components/PaginationNew.vue";
+
+
+watch(() => props.filter, async () => {
+  console.log("FROM WATCH PRODUCTS",props.filter);
+})
 
 const laravelData = ref({});
 const emit = defineEmits(['product-exam']);
 const getResults = async (page = 1) => {
-  const {data: response} = await useFetchApi(`/product/filter?page=${page}`)
+  const {data: response} = await useFetchApi(`/nyoba?page=${page}`)
   laravelData.value = await response?.value;
-  console.log(laravelData.value);
+  console.log("FROM GET RESULTS",laravelData.value);
 }
 
 const productExample = async () => {
