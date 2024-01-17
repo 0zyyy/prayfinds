@@ -17,7 +17,7 @@ export default defineNuxtConfig({
     },
     runtimeConfig: {
       public: {
-          apiBaseUrl: process.env.API_BASE_URL || 'https://159.223.68.58/api'
+          apiBaseUrl: process.env.API_BASE_URL
       }
     },
     devtools: {enabled: true},
@@ -33,7 +33,7 @@ export default defineNuxtConfig({
     ],
     ssr: true,
     nuxtJwtAuth: {
-        baseUrl: process.env.API_BASE_URL || 'https://159.223.68.58/api', // URL of your backend
+        baseUrl: process.env.API_BASE_URL, // URL of your backend
         endpoints: {
             login: '/login', // Where to request login (POST)
             logout: '/logout', // Where to request logout (POST)
