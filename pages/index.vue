@@ -4,7 +4,7 @@
     <WhyUsSection />
     <Category :categories="categories"/>
     <h2 class="text-2xl font-bold tracking-tight text-blue text-center">Contoh Produk</h2>
-    <Products :is-catalog="false" @product-exam="onProductExample"/>
+    <Products @product-exam="onProductExample"/>
   </div>
 </template>
 <script lang="ts" setup>

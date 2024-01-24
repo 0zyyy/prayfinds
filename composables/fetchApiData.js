@@ -1,3 +1,4 @@
+
 export const useFetchApi = (request, opts) => {
     const config = useRuntimeConfig();
 

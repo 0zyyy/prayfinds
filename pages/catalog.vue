@@ -90,7 +90,7 @@
                   class="absolute left-0 z-10 mt-2 w-40 origin-top-left rounded-md bg-white shadow-2xl ring-1 ring-blue ring-opacity-5 focus:outline-none">
                 <div class="py-1">
                   <MenuItem v-for="option in sortOptions" :key="option" v-slot="{ active }">
-                    <a @click="sort = option.name"
+                    <a @click="sort = option.value"
                        :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm font-medium text-blue hover:text-orange']">{{
                         option.name
                       }}</a>
@@ -174,7 +174,7 @@
       </div>
       <PaginationNew
           :data="laravelData"
-          @pagination-change-page.once="getResults"
+          @pagination-change-page="getResults"
       />
     </div>
   </div>
@@ -220,8 +220,8 @@ const currentPage = ref(1)
 // options
 const sortOptions =
     [
-      {name: 'Terbaru', href: '#'},
-      {name: 'Terlama', href: '#'},
+      {name: 'Terbaru', value: '-created_at'},
+      {name: 'Terlama', value: 'created_at'},
     ]
 
 //filters
@@ -240,14 +240,13 @@ const filters = [
 ]
 
 const getResults = async (page = 1) => {
-  const {data: response} = await useFetchApi(`/nyoba?page=${page}`, {
+  await useFetchApi(`/nyoba?page=${page}&sort=${sort.value}&filter[category_id]=${category.value.join(",")}`, {
     onResponse({request, response, options}) {
       // Process the response data
       laravelData.value = response?._data;
       console.log(laravelData.value);
     },
   })
-  laravelData.value = response?.value;
 }
 
 
@@ -257,7 +256,7 @@ onMounted(() => {
   })
 });
 
-watch(category, async () => {
+watch([category,sort], async () => {
   await getResults();
 })
 </script>
