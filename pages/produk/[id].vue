@@ -60,7 +60,7 @@
           </RadioGroup>
         </div>
       </section>
-      <a class="btn rounded-full bg-orange mt-4 text-white outline-none border-0" href="https://wa.me/6287856663646">Pesan Sekarang</a>
+      <a class="btn rounded-full bg-orange mt-4 text-white outline-none border-0" href="https://wa.me/6281912048852">Pesan Sekarang</a>
     </div>
     <!-- Product image -->
     <div class="mt-10 lg:col-start-1 lg:row-start-1 lg:mt-0 lg:self-end">
