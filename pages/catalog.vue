@@ -167,7 +167,16 @@
                 <p class="mt-1 text-sm text-gray font-medium capitalize">
                   {{ product.category.nama_kategori.split("-").join(" ") }}</p>
               </div>
-              <p class="mt-1 text-sm text-orange font-semibold">{{ useCurrencyFormatter(product.harga) }}</p>
+              <div class="flex items-center" v-if="product?.amount_discount == 0">
+                <p class="text-sm text-orange font-bold">{{ useCurrencyFormatter(product.harga) }}</p>
+              </div>
+              <div v-else>
+                <p class="text-sm text-orange font-bold">{{ useDiscountFormatter(product?.harga,product?.amount_discount) }}</p>
+                <div class="flex items-center">
+                  <p class="text-xs text-gray font-bold line-through">{{ useCurrencyFormatter(product.harga) }}</p>
+                  <p class="ml-2 text-xs text-red font-bold">{{ product?.amount_discount }}%</p>
+                </div>
+              </div>
             </div>
           </NuxtLink>
         </div>
@@ -205,6 +214,7 @@ import products from "~/components/Products.vue";
 import router from "#app/plugins/router";
 import PaginationNew from "~/components/PaginationNew.vue";
 import {refreshNuxtData} from "#app";
+import {useDiscountFormatter} from "~/composables/currencyFormatter.js";
 
 definePageMeta({
   layout: 'main',

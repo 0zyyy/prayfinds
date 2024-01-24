@@ -27,7 +27,7 @@
         <div v-else>
           <p class="text-lg text-orange font-bold sm:text-xl">{{ useCurrencyFormatter(product?.discounted_price) }}</p>
           <div class="flex items-center">
-            <p class="text-lg text-gray font-bold sm:text-xl line-through">{{ useCurrencyFormatter(product.harga) }}</p>
+            <p class="text-md text-gray font-bold line-through">{{ useCurrencyFormatter(product.harga) }}</p>
             <p class="ml-2 text-lg text-red font-bold sm:text-xl">{{ product?.amount_discount }}%</p>
           </div>
         </div>
@@ -60,6 +60,7 @@
           </RadioGroup>
         </div>
       </section>
+      <a class="btn rounded-full bg-orange mt-4 text-white outline-none border-0" href="https://wa.me/6287856663646">Pesan Sekarang</a>
     </div>
     <!-- Product image -->
     <div class="mt-10 lg:col-start-1 lg:row-start-1 lg:mt-0 lg:self-end">
