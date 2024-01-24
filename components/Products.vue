@@ -4,7 +4,7 @@
       <div class="group relative my-2" v-for="product in laravelData.data" :key="product.id">
         <div
             class="h-56 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:h-72 xl:h-80">
-          <img :src="product.image.thumbnail_url"
+          <img :src="product?.image?.thumbnail_url"
                alt="Hand stitched, orange leather long wallet."
                class="h-full w-full object-cover object-center">
         </div>
@@ -19,30 +19,19 @@
                 <span class="absolute inset-0"></span>
                 {{ product.nama_produk.substring(0, 40) + "..." }}
               </h3>
-              <p class="mt-1 text-sm text-gray font-medium capitalize">{{ product.category.nama_kategori.split("-").join(" ")}}</p>
+              <p class="mt-1 text-sm text-gray font-medium capitalize">
+                {{ product.category.nama_kategori.split("-").join(" ") }}</p>
             </div>
-            <p class="mt-1 text-sm text-orange font-semibold">{{ product.harga }}</p>
+            <p class="mt-1 text-sm text-orange font-semibold">{{ useCurrencyFormatter(product.harga) }}</p>
           </div>
         </NuxtLink>
       </div>
     </div>
-    <PaginationNew
-        :data="laravelData"
-        @pagination-change-page="getResults"
-        v-if="props.isCatalog"
-    />
   </div>
 </template>
 <script setup>
-import PaginationNew from "~/components/PaginationNew.vue";
-import {ref} from 'vue';
-
 
 const props = defineProps({
-  isCatalog: {
-    type: Boolean,
-    default: false,
-  },
   isRelated: {
     type: Boolean,
     default: false,
@@ -53,32 +42,23 @@ const props = defineProps({
   },
 })
 
-
-watch(() => props.filter, async () => {
-  console.log("FROM WATCH PRODUCTS",props.filter);
-})
+const emit = defineEmits(['product-exam']);
 
 const laravelData = ref({});
-const emit = defineEmits(['product-exam']);
-const getResults = async (page = 1) => {
-  const {data: response} = await useFetchApi(`/nyoba?page=${page}`)
-  laravelData.value = await response?.value;
-  console.log("FROM GET RESULTS",laravelData.value);
-}
 
 const productExample = async () => {
   try {
     const {data: response, error} = await useFetchApi(`/product-example`, {
       method: 'GET',
     })
-    if(error?.value?.statusCode === 500){
+    if (error?.value?.statusCode === 500) {
       laravelData.value = [];
       return;
     }
     laravelData.value = await response?.value;
-    emit('product-exam', laravelData.value.category);
-    console.log(laravelData.value);
-  }catch (e){
+    console.log(laravelData?.value);
+    emit('product-exam', laravelData?.value.category);
+  } catch (e) {
     console.log(e);
   }
 }
@@ -86,11 +66,7 @@ const productExample = async () => {
 
 onMounted(() => {
   nextTick(async () => {
-    if (props.isCatalog) {
-      await getResults();
-    }  else {
-      await productExample();
-    }
+    await productExample();
   })
 });
 </script>
