@@ -5,18 +5,18 @@
         <h1 class="text-4xl font-bold tracking-tight text-blue">Tambah Produk</h1>
       </div>
       <div class="rounded-lg border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default sm:px-7.5 xl:pb-1">
-        <form @submit.prevent="storeProduct()" >
+        <form @submit.prevent="storeProduct()">
           <div id="nama_produk">
             <label for="nama_produk" class="block mb-3 font-semibold text-blue text-md mt-4 text-left">Nama
               produk</label>
-            <input id="nama-produk" type="text" placeholder="Baju Koko Bagus" v-model="products.nama_produk" name="nama_produk"
-                   class="block w-full py-3 pl-5 mt-1 border border-orange rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"/>
+            <input id="nama-produk" type="text" v-model="products.nama_produk" name="nama_produk"
+                   class="block w-full py-3 pl-5 text-orange mt-1 border border-orange rounded-md shadow-sm focus:ring-blue focus:border-blue sm:text-sm"/>
           </div>
           <div id="harga_produk">
             <label for="harga_produk" class="block mb-3 font-semibold text-blue text-md mt-4 text-left">Harga
               produk</label>
-            <input id="harga_produk" name="harga_produk" type="text" placeholder="Baju Koko Bagus" v-model="products.harga"
-                   class="block w-full py-3 pl-5 mt-1 border border-orange rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"/>
+            <input id="harga_produk" name="harga_produk" type="number" v-model="products.harga"
+                   class="block w-full py-3 pl-5 mt-1 border border-orange rounded-md shadow-sm focus:ring-blue focus:border-blue sm:text-sm"/>
           </div>
           <div id="kategori">
             <label for="kategori-produk" class="block mb-3 font-semibold text-blue text-md mt-4 text-left">Kategori
@@ -30,10 +30,10 @@
                   <span
                       class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
                   >
-<!--            <ChevronUpDownIcon-->
-                    <!--                class="h-5 w-5 text-gray-400"-->
-                    <!--                aria-hidden="true"-->
-                    <!--            />-->
+            <ChevronUpDownIcon
+                class="h-5 w-5 text-gray-400"
+                aria-hidden="true"
+            />
           </span>
                 </ListboxButton>
 
@@ -75,14 +75,15 @@
           </div>
           <div id="deskripsi">
             <label for="deskrip" class="block mb-3 font-semibold text-blue text-md mt-4 text-left">Deskripsi</label>
-          <textarea v-model="products.description" id="deskrip" placeholder="Deskripsi Produk" class="textarea-bordered border border-orange rounded-md textarea-md block w-full py-3 pl-5 mt-1" ></textarea>
+            <textarea v-model="products.description" id="deskrip"
+                      class="textarea-bordered border border-orange rounded-md textarea-md block w-full py-3 pl-5 mt-1"></textarea>
           </div>
           <div id="stock">
             <label for="stock_produk" class="block mb-3 font-semibold text-blue text-md mt-4 text-left">Stock
               Produk</label>
-            <input id="stock-produk" type="number" placeholder="10"
+            <input id="stock-produk" type="number"
                    v-model="products.stock" name="stok"
-                   class="block w-full py-3 pl-5 mt-1 border border-orange rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm"/>
+                   class="block w-full py-3 pl-5 mt-1 border border-orange rounded-md shadow-sm focus:ring-blue focus:border-blue sm:text-sm"/>
           </div>
           <div id="product_photo">
             <label for="service-name" class="block mb-3 font-semibold text-blue text-md mt-4 text-left">Gambar
@@ -91,14 +92,14 @@
                    :name="input.name" :id="input.id"
                    autocomplete="service-name"
                    @change="handleFileChange($event)"
-                   class="block w-full py-3 pl-5 mt-1 border border-orange rounded-md shadow-sm focus:ring-green-500 focus:border-green-500 sm:text-sm">
+                   class="block w-full py-3 pl-5 mt-1 border border-orange rounded-md shadow-sm focus:ring-blue focus:border-blue sm:text-sm">
             <button class="btn btn-blue mt-4 flex items-center mb-4" id="tambah-gambar" @click.prevent="addPhoto">
               <p class="font-medium text-white justify-center">Tambah Gambar +</p>
             </button>
           </div>
-            <button type="submit" class="btn btn-blue mt-4 flex items-center mb-4" id="tambah-produk">
-              <p class="font-medium text-white justify-center">Tambak Produk</p>
-            </button>
+          <button type="submit" class="btn btn-blue mt-4 flex items-center mb-4" id="tambah-produk">
+            <p class="font-medium text-white justify-center">Tambak Produk</p>
+          </button>
         </form>
       </div>
     </div>
@@ -106,7 +107,9 @@
 </template>
 <script lang="ts" setup>
 import {Listbox, ListboxButton, ListboxOption, ListboxOptions} from "@headlessui/vue";
+import {ChevronUpDownIcon} from "@heroicons/vue/20/solid";
 import {ref} from 'vue'
+
 definePageMeta({
   layout: 'main',
   middleware: 'auth',
@@ -121,11 +124,11 @@ const items = ref([{
 }]);
 
 const categories = [
-  { id: 1, nama_kategori: 'mukenah' },
-  { id: 2, nama_kategori: 'sajadah' },
-  { id: 3, nama_kategori: 'baju-koko' },
-  { id: 4, nama_kategori: 'sarung' },
-  { id: 5, nama_kategori: 'jilbab' },
+  {id: 1, nama_kategori: 'mukenah'},
+  {id: 2, nama_kategori: 'sajadah'},
+  {id: 3, nama_kategori: 'baju-koko'},
+  {id: 4, nama_kategori: 'sarung'},
+  {id: 5, nama_kategori: 'jilbab'},
 ];
 
 const selectedCategory = ref(categories[0]);
@@ -148,7 +151,7 @@ function addPhoto() {
   })
 }
 
-const  handleFileChange = (e: any) => {
+const handleFileChange = (e: any) => {
   products.value.thumbnails.push(e.target.files[0]);
 }
 
@@ -156,33 +159,30 @@ function select(id) {
   products.value.category_id = id;
 }
 
-async function storeProduct(){
+async function storeProduct() {
 
-  if(products.value.nama_produk === '' || products.value.harga === null || products.value.stock === null || products.value.description === '' || products.value.category_id === '' || products.value.thumbnails.length === 0){
+  if (products.value.nama_produk === '' || products.value.harga === null || products.value.stock === null || products.value.description === '' || products.value.category_id === '' || products.value.thumbnails.length === 0) {
     alert('Mohon isi semua field');
     return;
   }
 
   let formData = new FormData();
 
-  console.log(products.value.category_id);
   formData.append('nama_produk', products.value.nama_produk);
-  formData.append('harga', useCurrencyFormatter(products.value.harga));
+  formData.append('harga', products.value.harga);
   formData.append('stok', products.value.stock);
+  formData.append('deskripsi', products.value.description);
   formData.append('category_id', products.value.category_id);
   for (let i = 0; i < products.value.thumbnails.length; i++) {
     formData.append('thumbnails[]', products.value.thumbnails[i]);
   }
-  console.log(products.value);
-
   // post data
-  try{
+  try {
     await useFetchApiWithAuth('/products/', {
       method: 'POST',
       body: formData,
     })
-    window.location.replace('/manage');
-  }catch (e){
+  } catch (e) {
     console.log(e);
   }
 }

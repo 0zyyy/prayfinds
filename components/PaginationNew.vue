@@ -10,7 +10,6 @@
         class="flex items-center justify-between border-t text-blue px-4 sm:px-0 mt-10"
         v-bind="$attrs"
         aria-label="Pagination"
-        v-if="slotProps.computed.total > slotProps.computed.perPage"
     >
       <button
           :disabled="!slotProps.computed.prevPageUrl"

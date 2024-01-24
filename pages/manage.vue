@@ -29,6 +29,9 @@
                 Stock
               </th>
               <th class="py-4 px-4 font-medium text-black dark:text-white">
+                Discount
+              </th>
+              <th class="py-4 px-4 font-medium text-black dark:text-white">
                 Actions
               </th>
             </tr>
@@ -36,8 +39,8 @@
             <tbody>
             <tr class="text-left" v-for="product in laravelData.data" :key="product.id">
               <td class="border-b border-[#eee] py-5 px-4 pl-9  xl:pl-11">
-                <h5 class="font-medium text-black">{{ product.nama_produk }}e</h5>
-                <p class="text-sm text-orange font-medium">{{ product.harga }}</p>
+                <h5 class="font-medium text-black">{{ product.nama_produk }}</h5>
+                <p class="text-sm text-orange font-medium">{{ useCurrencyFormatter(product.harga) }}</p>
               </td>
               <td class="border-b border-[#eee] py-5 px-4 ">
                 <p class="text-black">{{ product.created_at }}</p>
@@ -50,6 +53,11 @@
               <td class="border-b border-[#eee] py-5 px-4 ">
                 <p class="inline-flex rounded-full bg-success bg-opacity-10 py-1 px-3 text-sm font-medium text-success">
                   {{ product.stok }}
+                </p>
+              </td>
+              <td class="border-b border-[#eee] py-5 px-4 ">
+                <p class="inline-flex rounded-full bg-success bg-opacity-10 py-1 px-3 text-sm font-medium text-success">
+                  {{ product.amount_discount }}%
                 </p>
               </td>
               <td class="border-b border-[#eee] py-5 px-4 ">

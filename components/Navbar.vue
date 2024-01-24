@@ -13,10 +13,14 @@
             </div>
             <ul tabindex="0"
                 class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
-              <li><p class="font-semibold">Home</p></li>
+              <li>
+                <NuxtLink  to="/" class="font-semibold">Home</NuxtLink></li>
               <li v-if="loggedIn">
                 <NuxtLink class="font-semibold" to="/manage">Manage</NuxtLink>
               </li>
+<!--              <li v-if="loggedIn">-->
+<!--                <NuxtLink to="/wishlist" class="font-semibold">Wishlist</NuxtLink>-->
+<!--              </li>-->
               <li>
                 <NuxtLink class="font-semibold" to="/about">Tentang Kami</NuxtLink>
               </li>
@@ -34,6 +38,9 @@
             <li v-if="loggedIn">
               <NuxtLink to="/manage" class="font-semibold text-blue  hover:bg-orange hover:text-white">Manage</NuxtLink>
             </li>
+<!--            <li v-if="loggedIn">-->
+<!--              <NuxtLink to="/wishlist" class="font-semibold">Wishlist</NuxtLink>-->
+<!--            </li>-->
             <li>
               <NuxtLink to="/about" class="font-semibold text-blue  hover:bg-orange hover:text-white">Tentang Kami
               </NuxtLink>

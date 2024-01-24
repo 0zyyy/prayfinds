@@ -42,9 +42,12 @@
                   </h3>
                   <DisclosurePanel class="pt-6">
                     <div class="space-y-6">
-                      <div v-for="(option, optionIdx) in section.options" :key="option.value" class="flex items-center">
+                      <div v-for="(option, optionIdx) in section.options" :key="option.value"
+                           class="flex items-center">
                         <input :id="`filter-mobile-${section.id}-${optionIdx}`" :name="`${section.id}[]`"
                                :value="option.value" type="checkbox"
+                               v-model="category"
+                               @click="currentPage.value = 1"
                                class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"/>
                         <label :for="`filter-mobile-${section.id}-${optionIdx}`"
                                class="ml-3 text-sm text-blue">{{ option.label }}</label>
@@ -62,8 +65,6 @@
     <div class="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:max-w-7xl lg:px-8">
       <div class="py-24">
         <h1 class="text-4xl font-bold tracking-tight text-blue">Katalog Produk</h1>
-        <p class="mx-auto mt-4 max-w-3xl text-base text-gray">Thoughtfully designed objects for the workspace, home, and
-          travel.</p>
       </div>
 
       <section aria-labelledby="filter-heading" class="border-t border-blue py-6">
@@ -80,7 +81,8 @@
             </div>
 
             <transition enter-active-class="transition ease-out duration-100"
-                        enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100"
+                        enter-from-class="transform opacity-0 scale-95"
+                        enter-to-class="transform opacity-100 scale-100"
                         leave-active-class="transition ease-in duration-75"
                         leave-from-class="transform opacity-100 scale-100"
                         leave-to-class="transform opacity-0 scale-95">
@@ -88,7 +90,7 @@
                   class="absolute left-0 z-10 mt-2 w-40 origin-top-left rounded-md bg-white shadow-2xl ring-1 ring-blue ring-opacity-5 focus:outline-none">
                 <div class="py-1">
                   <MenuItem v-for="option in sortOptions" :key="option" v-slot="{ active }">
-                    <a @click="queries.sort = option.name"
+                    <a @click="sort = option.value"
                        :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm font-medium text-blue hover:text-orange']">{{
                         option.name
                       }}</a>
@@ -125,11 +127,12 @@
                   <form class="space-y-4">
                     <div v-for="(option, optionIdx) in section.options" :key="option.value" class="flex items-center">
                       <input :id="`filter-${section.id}-${optionIdx}`" :name="`${section.id}[]`" :value="option.value"
-                             @click="queries['filter[category_id]'] += option.value"
+                             v-model="category"
+                             @click="currentPage.value = 1"
                              type="checkbox" class="h-4 w-4 rounded border-blue text-blue focus:text-blue"/>
                       <label :for="`filter-${section.id}-${optionIdx}`"
                              class="ml-3 whitespace-nowrap pr-6 text-sm font-medium text-blue">{{
-                          option.label + " ngentod"
+                          option.label
                         }}</label>
                     </div>
                   </form>
@@ -140,7 +143,40 @@
         </div>
       </section>
     </div>
-    <Products :is-catalog="true" :filter="queries.sort"/>
+    <!--    products-->
+    <div class="mx-auto max-w-2xl py-7 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
+      <div class="grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-4 md:gap-y-0 lg:gap-x-8">
+        <div class="group relative my-2" v-for="product in laravelData?.data" :key="product.id">
+          <div
+              class="h-56 w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75 lg:h-72 xl:h-80">
+            <img :src="product?.image?.thumbnail_url"
+                 alt="Hand stitched, orange leather long wallet."
+                 class="h-full w-full object-cover object-center">
+          </div>
+          <NuxtLink :to="'/produk/'+ product.id">
+            <div class="block lg:flex lg:justify-between lg:items-center">
+              <div>
+                <h3 class="mt-4 text-sm text-blue font-bold hover:text-orange" v-if="product.nama_produk.length < 50">
+                  <span class="absolute inset-0"></span>
+                  {{ product.nama_produk }}
+                </h3>
+                <h3 class="mt-4 text-sm text-blue font-bold hover:text-orange" v-else>
+                  <span class="absolute inset-0"></span>
+                  {{ product.nama_produk.substring(0, 40) + "..." }}
+                </h3>
+                <p class="mt-1 text-sm text-gray font-medium capitalize">
+                  {{ product.category.nama_kategori.split("-").join(" ") }}</p>
+              </div>
+              <p class="mt-1 text-sm text-orange font-semibold">{{ useCurrencyFormatter(product.harga) }}</p>
+            </div>
+          </NuxtLink>
+        </div>
+      </div>
+      <PaginationNew
+          :data="laravelData"
+          @pagination-change-page="getResults"
+      />
+    </div>
   </div>
 </template>
 <script setup>
@@ -167,64 +203,60 @@ import {ChevronDownIcon} from '@heroicons/vue/20/solid'
 import Pagination from "~/components/Pagination.vue";
 import products from "~/components/Products.vue";
 import router from "#app/plugins/router";
+import PaginationNew from "~/components/PaginationNew.vue";
+import {refreshNuxtData} from "#app";
+
 definePageMeta({
   layout: 'main',
 })
 
-const route = useRoute();
-const queries = ref({
-  sort: '',
-  'filter[category_id]': '',
-});
 
-watch(queries, async () => {
-  console.log("FROM CATALOG TEMPLATE",queries.value);
-}, {deep: true, immediate: true})
+const laravelData = ref({});
+const sort = ref('');
+const category = ref([]);
+const open = ref(false)
+const currentPage = ref(1)
 
-
+// options
 const sortOptions =
     [
-      {name: 'Newest', href: '#'},
-      {name: 'Oldest', href: '#'},
+      {name: 'Terbaru', value: '-created_at'},
+      {name: 'Terlama', value: 'created_at'},
     ]
+
+//filters
 const filters = [
   {
     id: 'category',
     name: 'Kategori',
     options: [
-      {value: 'All', label: 'All'},
-      {value: 'baju', label: 'Baju Koko'},
-      {value: 'jilbab', label: 'Jilbab'},
-      {value: 'mukenah', label: 'Mukenah'},
-      {value: 'sarung', label: 'Sarung'},
-      {value: 'sajadah ', label: 'Sajadah'},
+      {value: '3', label: 'Baju Koko', checked: false},
+      {value: '5', label: 'Jilbab', checked: false},
+      {value: '1', label: 'Mukenah', checked: false},
+      {value: '4', label: 'Sarung', checked: false},
+      {value: '2', label: 'Sajadah', checked: false},
     ],
   },
 ]
 
-const open = ref(false)
+const getResults = async (page = 1) => {
+  await useFetchApi(`/nyoba?page=${page}&sort=${sort.value}&filter[category_id]=${category.value.join(",")}`, {
+    onResponse({request, response, options}) {
+      // Process the response data
+      laravelData.value = response?._data;
+      console.log(laravelData.value);
+    },
+  })
+}
 
-// let allProduct = ref([]);
-// let totalPages = ref(4);
-// let perPage = ref(10);
-// let currentPage = ref(1);
-// let hasMorePages = ref(true);
-// let maxVisibleButtons = ref(10);
-// let links = ref({});
-//
-// onMounted(() => {
-//   nextTick(async () => {
-//     const {data: response} = await useFetchApi(`/nyoba?sort=-created_at&filer[category_id]=9`, {
-//       method: 'GET',
-//     })
-//     console.log("ON MOUNTED", response.value);
-//     allProduct.value = response?.value?.data;
-//     currentPage.value = response?.value?.current_page;
-//     hasMorePages.value = response?.value?.next_page_url != null;
-//     perPage.value = response?.value?.per_page;
-//     totalPages.value = response?.value?.last_page;
-//     maxVisibleButtons.value = response?.value?.last_page;
-//     links.value = response?.value?.links;
-//   })
-// })
+
+onMounted(() => {
+  nextTick(async () => {
+    await getResults();
+  })
+});
+
+watch([category,sort], async () => {
+  await getResults();
+})
 </script>

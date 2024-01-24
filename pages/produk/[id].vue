@@ -13,14 +13,23 @@
       </nav>
 
       <div class="mt-4 lg:w-[600px]">
-        <h1 class="text-3xl font-bold tracking-tight text-blue sm:text-4xl break-words"> {{ product?.nama_produk }}</h1>
+        <h1 class="text-2xl font-bold tracking-tight text-blue sm:text-4xl break-words"> {{
+            product?.nama_produk
+          }}</h1>
       </div>
 
       <section aria-labelledby="information-heading" class="mt-4">
         <h2 id="information-heading" class="sr-only">Product information</h2>
 
-        <div class="flex items-center">
-          <p class="text-lg text-orange font-bold sm:text-xl">{{ product.harga }}</p>
+        <div class="flex items-center" v-if="product?.amount_discount == 0">
+          <p class="text-lg text-orange font-bold sm:text-xl">{{ useCurrencyFormatter(product.harga) }}</p>
+        </div>
+        <div v-else>
+          <p class="text-lg text-orange font-bold sm:text-xl">{{ useCurrencyFormatter(product?.discounted_price) }}</p>
+          <div class="flex items-center">
+            <p class="text-lg text-gray font-bold sm:text-xl line-through">{{ useCurrencyFormatter(product.harga) }}</p>
+            <p class="ml-2 text-lg text-red font-bold sm:text-xl">{{ product?.amount_discount }}%</p>
+          </div>
         </div>
 
         <p class="text-blue font-medium mt-4">
@@ -28,17 +37,6 @@
         </p>
         <div class="mt-4 space-y-6">
           <p class="text-base text-gray">{{ product.deskripsi }}</p>
-        </div>
-
-        <div class="mt-6 flex items-center">
-          <!-- Heroicon name: mini/check -->
-          <svg class="h-5 w-5 flex-shrink-0 text-green-500" xmlns="http://www.w3.org/2000/svg"
-               viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-            <path fill-rule="evenodd"
-                  d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z"
-                  clip-rule="evenodd"/>
-          </svg>
-          <p class="ml-2 text-sm text-blue font-semibold">In stock and ready to ship</p>
         </div>
         <h3 class="mb-5 mt-2 text-md font-medium text-blue">Tersedia dalam: </h3>
         <div class="sm:flex sm:justify-between">
@@ -95,7 +93,12 @@
               </h3>
               <p class="mt-1 text-sm text-gray font-medium">Baju Koko</p>
             </div>
-            <p class="mt-1 text-sm text-orange font-semibold">{{ product.harga }}</p>
+            <div class="flex items-center" v-if="product?.amount_discount != 0">
+              <p class="mt-1 text-sm text-orange font-semibold line-through">{{
+                  useCurrencyFormatter(product.harga)
+                }}</p>
+            </div>
+            <p class="mt-1 text-sm text-orange font-semibold" v-else>{{ useCurrencyFormatter(product.harga) }}</p>
           </div>
         </NuxtLink>
       </div>
@@ -118,7 +121,7 @@ const sizes = [
   {name: 'L', description: 'Ukuran L'},
   {name: 'XL', description: 'Ukuran XL'},
 ];
-console.log(config.public);
+const selectedSize = ref(sizes[0])
 const getProductById = async () => {
   const {data: response, error} = await useFetchApi(`/products/${route.params.id}`);
   product.value = await response?.value?.data;
@@ -131,5 +134,4 @@ onMounted(() => {
   })
 });
 
-const selectedSize = ref(sizes[0])
 </script>
