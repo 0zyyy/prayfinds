@@ -75,8 +75,8 @@
 <script lang="ts" setup>
 const props = defineProps({
   categories: {
-    type: Array,
-    default: [],
+    type: Object,
+    default: {},
   },
 })
 

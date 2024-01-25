@@ -254,7 +254,6 @@ const getResults = async (page = 1) => {
     onResponse({request, response, options}) {
       // Process the response data
       laravelData.value = response?._data;
-      console.log(laravelData.value);
     },
   })
 }

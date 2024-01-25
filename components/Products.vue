@@ -67,7 +67,6 @@ const productExample = async () => {
       return;
     }
     laravelData.value = await response?.value;
-    console.log(laravelData?.value);
     emit('product-exam', laravelData?.value.category);
   } catch (e) {
     console.log(e);

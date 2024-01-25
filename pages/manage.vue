@@ -172,29 +172,23 @@ definePageMeta({
   layout: 'main',
   middleware: 'auth',
 })
-
-
-const { $jwtAuth } = useNuxtApp()
 const laravelData = ref({});
 
 const getResults = async (page = 1) => {
   const {data: response} = await useFetchApi(`/product/filter?page=${page}`);
   laravelData.value = await response?.value;
-  console.log(laravelData.value);
 }
 
 const isOpen = ref(false)
 const productId = ref(1)
 const deleteProduct = async () => {
   try {
-  const {data: response, error} = await useFetchApiWithAuth(`/products/${productId.value}`, {
+  await useFetchApiWithAuth(`/products/${productId.value}`, {
     method: 'DELETE',
+    async onResponse({ request, response, options}){
+      alert(response._data.message);
+    }
   })
-  if(error?.value?.statusCode === 500){
-    laravelData.value = [];
-    return;
-  }
-  console.log(response);
   laravelData.value.data = laravelData.value.data.filter((product) => product.id !== productId.value);
   closeModal();
   }catch (e){

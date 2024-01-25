@@ -15,7 +15,6 @@ definePageMeta({
 const categories = ref({});
 
 const onProductExample = (data) => {
-  console.log("dari child", data);
   categories.value = data;
 }
 </script>
