@@ -38,7 +38,7 @@ export default defineComponent({
         </div>
       </div>
       <div class="justify-start items-center gap-3.5 flex m-1 mt-3">
-        <div class="w-[60px]">
+        <div class="w-28 lg:w-[60px]">
           <img src="/images/icons/shipping.svg">
         </div>
         <div class="flex inline-flex">

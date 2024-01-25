@@ -196,6 +196,13 @@ async function storeProduct() {
     await useFetchApiWithAuth('/products/' + idProduk.value, {
       method: 'POST',
       body: formData,
+      async onResponse({ request, response, options }) {
+        // Log response
+        if (response.status === 200){
+          window.location.href = "/manage";
+          alert(response._data.message);
+        }
+      }
     })
   } catch (e) {
     console.log(e);
